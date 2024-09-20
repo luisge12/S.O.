@@ -8,3 +8,5 @@ class Process:
         self.tiempo_espera = 0
         self.tiempo_retorno = 0
         self.tiempo_restante = tiempo_ejecucion  # Para seguir el progreso
+        self.prioridad = 0
+        

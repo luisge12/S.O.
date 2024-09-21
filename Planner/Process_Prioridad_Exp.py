@@ -3,7 +3,7 @@ import os
 import random
 from Processes.Process import Process
 
-class PrioridadNE:
+class PrioridadExp:
 
 	# Función para limpiar la consola
 	@staticmethod
@@ -13,7 +13,7 @@ class PrioridadNE:
 	# Función para mostrar la tabla en tiempo real
 	@staticmethod
 	def mostrar_tabla(procesos, tiempo_actual, cola_listos, cola_terminado, proceso_actual, tiempo_cpu = None) -> None:
-		PrioridadNE.limpiar_consola()  # Limpiar la consola antes de mostrar la tabla actualizada
+		PrioridadExp.limpiar_consola()  # Limpiar la consola antes de mostrar la tabla actualizada
 		print(f"Tiempo actual: {tiempo_actual}")
 		print(f"{'Proceso':<10}{'Llegada':<10}{'Prioridad':<10}{'Ejecución':<10}{'Comienzo':<10}{'Restante':<10}{'Final':<10}{'Espera':<10}{'Retorno':<10}")
 		for proceso in procesos:
@@ -38,13 +38,14 @@ class PrioridadNE:
 
 		return copia
 
-	# metodo que ejecuta el algoritmo
+	# funcion que ejecuta el algoritmo
 	@staticmethod
-	def prioridad_no_expulsiva_real_time(procesos) -> list:
+	def prioridad_expulsiva_real_time(procesos) -> list:
 		tiempo_actual = 0
-		todos_procesos = PrioridadNE.generar_prioridad(procesos)
+		todos_procesos = PrioridadExp.generar_prioridad(procesos)
 		cola_listos = []
 		cola_terminado = []
+		procesos_inicio_ejecucion = [] # lista auxiliar que nos ayuda a saber si un proceso ya habia sido ejecutado
 		proceso_actual = None
 
 		while True:
@@ -55,31 +56,41 @@ class PrioridadNE:
 			# si hay uno o mas proceso en la cola de listos, los ordenamos de manera ascendente segun su peso
 			if len(cola_listos) > 0:
 				cola_listos.sort(key = lambda proceso: proceso.prioridad)
-				# proceso_actual almacena el proceso que se va a ejecutar
+				# si no proceso_actual almacenamos el proceso que se va a ejecutar
 				if not proceso_actual:
 					proceso_actual = cola_listos.pop(0)
+				else: # si existe verificamos que su prioridad sea mayor entre todos los procesos listo
+					if proceso_actual.prioridad > cola_listos[0].prioridad: # si es menor se intercambia por la de mayor prioridad
+						proceso_aux = proceso_actual
+						proceso_actual = cola_listos.pop(0)
+						cola_listos.append(proceso_aux)
+				# si el proceso no a sido ejecutado anteriormente actualizamos su valor de tiempo_coienzo
+				if not proceso_actual in procesos_inicio_ejecucion: 
 					proceso_actual.tiempo_comienzo = tiempo_actual
+					procesos_inicio_ejecucion.append(proceso_actual)
+			
 			#imprimimos la informacion de los procesos
-			PrioridadNE.mostrar_tabla(todos_procesos, tiempo_actual, cola_listos, cola_terminado, proceso_actual)
+			PrioridadExp.mostrar_tabla(todos_procesos, tiempo_actual, cola_listos, cola_terminado, proceso_actual)
 			tiempo_actual += 1 #aumentamos nuestro contador de tiempo
 			time.sleep(1)  # Esperar 1 segundo para simular el paso del tiempo real
 
 			if proceso_actual:
 				proceso_actual.tiempo_restante -= 1 # si se esta ejecutando un proceso decrementamos el valor de tiempo restante
+
 				# al finalizar la ejecucion del proceso actualizamos sus valores de tiempo y lo agregamos en la lista de terminados
 				if proceso_actual.tiempo_restante == 0: 
 					proceso_actual.tiempo_finalizacion = tiempo_actual
-					proceso_actual.tiempo_retorno = proceso_actual.tiempo_finalizacion - proceso_actual.tiempo_llegada
-					proceso_actual.tiempo_espera = proceso_actual.tiempo_comienzo - proceso_actual.tiempo_llegada
+					proceso_actual.tiempo_espera = proceso_actual.tiempo_finalizacion - proceso_actual.tiempo_llegada - proceso_actual.tiempo_ejecucion
+					proceso_actual.tiempo_retorno = proceso_actual.tiempo_espera + proceso_actual.tiempo_ejecucion
 					cola_terminado.append(proceso_actual)
 					proceso_actual = None
 
 			# si terminaron la ejecucion todos nuestros procesos, imprimimos por ultima vez la tabla de valores
 			if not proceso_actual and len(cola_terminado) == len(todos_procesos):
-				PrioridadNE.mostrar_tabla(todos_procesos, 'Finalizo', cola_listos, cola_terminado, proceso_actual, tiempo_actual)
+				PrioridadExp.mostrar_tabla(todos_procesos, 'Finalizo', cola_listos, cola_terminado, proceso_actual, tiempo_actual)
 				break
 
-		return todos_procesos
+		return todos_procesos	
 
 
 
@@ -91,4 +102,4 @@ procesos = [
     Process("P4", 5, 2)
 ]
 
-PrioridadNE.prioridad_no_expulsiva_real_time(procesos)
+PrioridadExp.prioridad_expulsiva_real_time(procesos)

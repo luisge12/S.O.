@@ -8,6 +8,7 @@ from Planner.Non_expulsives import FCFS, SJF, SA, PrioridadNE
 from Planner.Expulsives import SRTF, PrioridadExp, RR
 
 results = []  # Lista de resultados
+aux_list = [] #lista auxiliar de procesos
 processes = []  # Lista de procesos
 
 
@@ -121,8 +122,8 @@ def generate_process(event=None):  # Función para generar los procesos a ejecut
     messagebox.showinfo("Proceso generado", "El proceso ha sido generado con éxito")
 
 def show_process(event=None):
-    for var in processes:
-        print(var.nombre, var.tiempo_llegada, var.tiempo_ejecucion)
+    for aux in aux_list:
+        processes.append(aux)
 
 root = Tk()
 root.grid()

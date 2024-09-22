@@ -22,7 +22,8 @@ class FCFS:
             print(f"{proceso.nombre:<10}{proceso.tiempo_llegada:<10}{proceso.tiempo_ejecucion:<10}{proceso.tiempo_comienzo:<10}{proceso.tiempo_restante:<10}{proceso.tiempo_finalizacion:<10}{proceso.tiempo_espera:<10}{proceso.tiempo_retorno:<10}")
 
     @staticmethod
-    def fcfs_real_time(procesos):
+    def fcfs_real_time(processes):
+        procesos = processes
         tiempo_actual = 0
         procesos = sorted(procesos, key=lambda p: p.tiempo_llegada)
         resultados_en_tiempo_real = []
@@ -32,7 +33,6 @@ class FCFS:
             if tiempo_actual < proceso.tiempo_llegada:
                 while tiempo_actual < proceso.tiempo_llegada:
                     FCFS.mostrar_tabla(procesos, tiempo_actual)
-                    time.sleep(1)
                     tiempo_actual += 1
 
             # Iniciar el proceso cuando llega su tiempo de llegada
@@ -96,7 +96,8 @@ class SJF:  # Short Job First
             print(f"{proceso.nombre:<10}{proceso.tiempo_llegada:<10}{proceso.tiempo_ejecucion:<10}{proceso.tiempo_comienzo:<10}{proceso.tiempo_restante:<10}{proceso.tiempo_finalizacion:<10}{proceso.tiempo_espera:<10}{proceso.tiempo_retorno:<10}")
 
     @staticmethod
-    def sjf_real_time(procesos):
+    def sjf_real_time(processes):
+        procesos = processes
         tiempo_actual = 0
         procesos_restantes = procesos.copy()
         resultados_en_tiempo_real = []  # Lista para almacenar los resultados en tiempo real
@@ -152,7 +153,7 @@ class SJF:  # Short Job First
             else:
                 # Si no hay procesos que hayan llegado, avanzar el tiempo
                 SJF.mostrar_tabla(procesos, tiempo_actual)  # Mostrar la tabla actualizada
-                time.sleep(1)
+
                 tiempo_actual += 1
 
         return resultados_en_tiempo_real
@@ -181,7 +182,8 @@ class SA:  # Random Selection
         print("\nProcesos disponibles: ", [proceso.nombre for proceso in procesos_disponibles])
 
     @staticmethod
-    def seleccion_aleatoria_real_time(procesos):
+    def seleccion_aleatoria_real_time(processes):
+        procesos = processes
         tiempo_actual = 0
         procesos_restantes = procesos.copy()
         resultados_en_tiempo_real = []  # Lista para almacenar los resultados en tiempo real
@@ -198,7 +200,7 @@ class SA:  # Random Selection
                 proceso_actual.tiempo_comienzo = max(tiempo_actual, proceso_actual.tiempo_llegada)
                 while proceso_actual.tiempo_restante > 0:
                     SA.mostrar_tabla(procesos, tiempo_actual, procesos_disponibles)  # Mostrar la tabla actualizada
-                    time.sleep(1)  # Simular paso de tiempo
+
                     proceso_actual.tiempo_restante -= 1
                     tiempo_actual += 1
 
@@ -274,7 +276,8 @@ class PrioridadNE:
         return copia
 
     @staticmethod
-    def prioridad_no_expulsiva_real_time(procesos) -> list:
+    def prioridad_no_expulsiva_real_time(processes) -> list:
+        procesos = processes
         tiempo_actual = 0
         todos_procesos = PrioridadNE.generar_prioridad(procesos)
         cola_listos = []
@@ -294,7 +297,7 @@ class PrioridadNE:
 
             PrioridadNE.mostrar_tabla(todos_procesos, tiempo_actual, cola_listos, cola_terminado, proceso_actual)
             tiempo_actual += 1
-            time.sleep(1)
+
 
             if proceso_actual:
                 proceso_actual.tiempo_restante -= 1

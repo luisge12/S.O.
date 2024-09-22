@@ -29,7 +29,8 @@ class RR:  # Round Robin
 
     # Función para ejecutar Round Robin en tiempo real
     @staticmethod
-    def round_robin_real_time(procesos, quantum):
+    def round_robin_real_time(processes, quantum):
+        procesos = processes
         tiempo_actual = 0
         cola_procesos = []
         finalizados = []
@@ -56,7 +57,7 @@ class RR:  # Round Robin
 
                 for _ in range(tiempo_a_ejecutar):
                     RR.mostrar_tabla(todos_procesos, tiempo_actual, cola_procesos)
-                    time.sleep(1)  # Simulación de 1 segundo por unidad de tiempo
+
                     tiempo_actual += 1
                     proceso_actual.tiempo_restante -= 1
 
@@ -103,7 +104,7 @@ class RR:  # Round Robin
             else:
                 # Si no hay procesos en la cola, avanzar el tiempo al siguiente proceso que llegue
                 RR.mostrar_tabla(todos_procesos, tiempo_actual, cola_procesos)
-                time.sleep(1)
+
                 tiempo_actual += 1
 
         return resultados_en_tiempo_real  # Retornar los resultados en tiempo real
@@ -134,7 +135,8 @@ class SRTF:  # Shortest Remaining Time First
 
     # Función para ejecutar SRTF en tiempo real
     @staticmethod
-    def srtf_real_time(procesos):
+    def srtf_real_time(processes):
+        procesos = processes
         tiempo_actual = 0
         cola_procesos = []
         finalizados = []
@@ -158,7 +160,7 @@ class SRTF:  # Shortest Remaining Time First
 
                 # Ejecutar el proceso por 1 unidad de tiempo
                 SRTF.mostrar_tabla(todos_procesos, tiempo_actual, cola_procesos)
-                time.sleep(1)  # Simulación de 1 segundo por unidad de tiempo
+
                 tiempo_actual += 1
                 proceso_actual.tiempo_restante -= 1
 
@@ -198,7 +200,7 @@ class SRTF:  # Shortest Remaining Time First
             else:
                 # Si no hay procesos disponibles, avanzar el tiempo hasta que uno llegue
                 SRTF.mostrar_tabla(todos_procesos, tiempo_actual, cola_procesos)
-                time.sleep(1)
+                
                 tiempo_actual += 1
 
         return resultados_en_tiempo_real  # Retornar los resultados en tiempo real
@@ -233,7 +235,8 @@ class PrioridadExp:
         return copia
 
     @staticmethod
-    def prioridad_expulsiva_real_time(procesos) -> list:
+    def prioridad_expulsiva_real_time(processes) -> list:
+        procesos = processes
         tiempo_actual = 0
         todos_procesos = PrioridadExp.generar_prioridad(procesos)
         cola_listos = []
@@ -303,13 +306,13 @@ class PrioridadExp:
             else:
                 # Si no hay procesos en ejecución ni en la cola, avanzar el tiempo
                 print("No hay procesos en ejecución ni en cola. Avanzando tiempo...")
-                time.sleep(1)  # Opcional: para ver la pausa
+
                 tiempo_actual += 1
                 continue  # Volver al inicio del bucle
 
             # Incrementar el tiempo
             tiempo_actual += 1
-            time.sleep(1)
+
 
             # Comprobar si todos los procesos han terminado
             if not proceso_actual and len(cola_terminado) == len(todos_procesos):
